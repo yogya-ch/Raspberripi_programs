@@ -67,11 +67,11 @@ camera = cv2.VideoCapture(-1)
 while True:
     (grabbed, frame) = camera.read()
     frame = imutils.resize(frame, width=900)
-hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #convert image colorspace
 
-mask = cv2.inRange(hsv, HSV_Lower, HSV_Upper)
-mask = cv2.erode(mask, None, iterations=2)
-mask = cv2.dilate(mask, None, iterations=2)
+mask = cv2.inRange(hsv, HSV_Lower, HSV_Upper) #inRange method which returns a mask, specifying which pixels fall into your specified upper and lower range
+mask = cv2.erode(mask, None, iterations=2) #and operation with mask
+mask = cv2.dilate(mask, None, iterations=2)#or operation with mask
 
 cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
                         cv2.CHAIN_APPROX_SIMPLE)[-2]
@@ -95,64 +95,23 @@ if len(cnts) > 0:
         key = cv2.waitKey(1) & 0xFF
 
         if x > 0 and x < 300:
-    forward(motor1, 200, motor2, 0)
-elif x > 300 and x < 600:
-    forward(motor1, 70, motor2, 70)
-elif x > 600 and x < 900:
-    forward(motor1, 0, motor2, 20)
-else:
-    forward(motor1, 70, motor2, 70)
-
-if radius > 200:
-    forward(motor1, 0, motor2, 0)
-    Position(servo, 15)
-    wp.delay(2000)
-    # Sweep(servo,100)
-    break
-
-while True:
-    (grabbed, frame) = camera.read()
-    frame = imutils.resize(frame, width=900)
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    mask = cv2.inRange(hsv, pink_lower, pink_upper)
-    mask = cv2.erode(mask, None, iterations=2)
-    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
-                            cv2.CHAIN_APPROX_SIMPLE)[-2]
-center = None
-
-if len(cnts) > 0:
-    c = max(cnts, key=cv2.contourArea)
-    ((x, y), radius) = cv2.minEnclosingCircle(c)
-    M = cv2.moments(c)
-    center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
-    if radius > 10:
-        cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-        cv2.circle(frame, center, 5, (0, 0, 255), -1)
-        a = int(x)
-        b = int(y)
-        r = int(radius)
-        print "x=", a, "y=", b, "z=", r
-    key = cv2.waitKey(1) & 0xFF
-
-    if x > 0 and x < 300:
-        forward(motor1, 30, motor2, 0)
-    elif x > 300 and x < 600:
-        forward(motor1, 70, motor2, 70)
+            forward(motor1, 200, motor2, 0)
+        elif x > 300 and x < 600:
+            forward(motor1, 70, motor2, 70)
         elif x > 600 and x < 900:
-        forward(motor1, 0, motor2, 30)
-    else:
-        forward(motor1, 70, motor2, 70)
+            forward(motor1, 0, motor2, 20)
+        else:
+            forward(motor1, 70, motor2, 70)
 
     if radius > 200:
         forward(motor1, 0, motor2, 0)
-        # Position(servo,15)
+        Position(servo, 15)
         wp.delay(2000)
-        Sweep(servo, 100)
+        # Sweep(servo,100)
         break
 
-        key = cv2.waitKey(1) & 0xFF
+    key = cv2.waitKey(1) & 0xFF
+
 if key == ord("q"):
     forward(motor1, 0, motor2, 0)
     break
